@@ -38,6 +38,6 @@ npm run dist:win                                # Windows-Installer lokal bauen
    ```bash
    git commit -am "Version 1.0.1"
    git tag v1.0.1
-   git push --follow-tags
+   git push origin main v1.0.1
    ```
 3. GitHub Actions baut beide Installer (ca. 10 Min.) und veröffentlicht sie als Release. Die Download-Links oben zeigen automatisch auf die neueste Version.
