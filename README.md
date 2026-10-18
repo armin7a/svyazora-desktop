@@ -12,7 +12,17 @@ Svyazora als eigenes Programm für **Windows 10/11** und **macOS** (Apple Silico
 Die App ist nicht mit einem kostenpflichtigen Entwickler-Zertifikat signiert. Deshalb fragt das System beim ersten Start nach:
 
 - **Windows:** „Der Computer wurde durch Windows geschützt“ → *Weitere Informationen* → *Trotzdem ausführen*.
-- **macOS:** DMG öffnen, Svyazora in *Programme* ziehen, starten. Erscheint eine Warnung: *Systemeinstellungen* → *Datenschutz & Sicherheit* → bei Svyazora *Dennoch öffnen*.
+- **macOS** (ab macOS 12, Apple Silicon und Intel):
+  1. `Svyazora-macOS.dmg` öffnen und **Svyazora** in den Ordner **Programme** ziehen.
+  2. Svyazora starten. Erscheint „Apple konnte nicht überprüfen …“, auf **Fertig** klicken.
+  3. **Systemeinstellungen → Datenschutz & Sicherheit** öffnen, ganz nach unten scrollen und bei Svyazora auf **Dennoch öffnen** klicken, mit Passwort bestätigen.
+  4. Meldet macOS „Svyazora ist beschädigt“: einmal im Terminal ausführen, danach startet die App normal:
+     ```bash
+     xattr -cr /Applications/Svyazora.app
+     ```
+
+  Das ist nur beim ersten Start nötig. Grund: macOS markiert Downloads aus dem Browser und prüft sie; ohne kostenpflichtiges
+  Apple-Entwicklerzertifikat muss man die App einmal selbst freigeben.
 
 ## Wie die App aktuell bleibt
 
