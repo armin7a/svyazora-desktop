@@ -1,0 +1,63 @@
+# Baut die Installer für Windows und macOS und veröffentlicht sie als GitHub-Release.
+# Auslöser: ein Tag wie v1.0.1 (Version vorher in package.json anpassen) oder manuell (nur Build, ohne Release).
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: dist:win
+          - os: macos-latest
+            script: dist:mac
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run ${{ matrix.script }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            release/*.exe
+            release/*.blockmap
+            release/*.dmg
+            release/latest*.yml
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Release veröffentlichen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la dist
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Svyazora ${GITHUB_REF_NAME#v}" \
+            --notes "Svyazora für Windows 10/11 und macOS (Apple Silicon und Intel). Die App lädt immer die aktuelle Version von https://svyazora.netlify.app – Inhalte und Design sind sofort auf dem neuesten Stand.
+
+          **Windows:** \`Svyazora-Windows-Setup.exe\` herunterladen und starten. Erscheint „Der Computer wurde durch Windows geschützt“: *Weitere Informationen* → *Trotzdem ausführen*.
+
+          **macOS:** \`Svyazora-macOS.dmg\` öffnen und Svyazora in den Programme-Ordner ziehen. Beim ersten Start: *Systemeinstellungen* → *Datenschutz & Sicherheit* → *Dennoch öffnen*."

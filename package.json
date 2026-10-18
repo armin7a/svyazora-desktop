@@ -1,0 +1,77 @@
+{
+  "name": "svyazora-desktop",
+  "productName": "Svyazora",
+  "version": "1.0.0",
+  "description": "Svyazora als Desktop-App für Windows und macOS",
+  "author": "Svyazora",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "icons": "node scripts/icons.mjs",
+    "dist:win": "electron-builder --win --publish never",
+    "dist:mac": "electron-builder --mac --publish never"
+  },
+  "build": {
+    "appId": "app.svyazora.desktop",
+    "productName": "Svyazora",
+    "copyright": "© Svyazora",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.cjs",
+      "offline.html"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "armin7a",
+      "repo": "svyazora-desktop"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon-win.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "Svyazora-Windows-Setup.${ext}",
+      "shortcutName": "Svyazora"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.productivity",
+      "identity": null,
+      "artifactName": "Svyazora-macOS.${ext}"
+    },
+    "dmg": {
+      "artifactName": "Svyazora-macOS.${ext}"
+    },
+    "afterSign": "scripts/adhoc-sign.cjs"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "repository": "github:armin7a/svyazora-desktop",
+  "devDependencies": {
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
+    "sharp": "^0.35.5"
+  }
+}
